@@ -1,0 +1,145 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="En löpande tävling vänner emellan.">
+    <meta name="author" content="johz">
+    <title>En löpande tävling</title>
+    <link rel="shortcut icon" href="">
+    <link rel="canonical" href="http://www.johz.se/run/" />
+    <meta property="og:site_name" content="johz.se" />
+    <meta property="og:title" content="En löpande tävling" />
+    <meta property="og:url" content="http://www.johz.se/run/" />
+    <meta property="og:type" content="website" />
+    <meta itemprop="name" content="En löpande tävling vänner emellan." />
+    <meta itemprop="url" content="http://www.johz.se/run/" />
+    <meta name="twitter:title" content="En löpande tävling" />
+    <meta name="twitter:url" content="http://www.johz.se/run/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="description" content="En löpande tävling vänner emellan." />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load('visualization', '1', {
+            'packages': ['corechart']
+        });
+
+        var ssKey = '1Eyni9nTw07u3Gigo1WbgTcNxz1pYAXV7HwroLYk5Eiw';
+
+        google.setOnLoadCallback(initializeCurrentYear);
+
+        function initialize2013() {
+            $(".nav li").removeClass("active");
+            $("#2013").addClass("active");
+            // The URL of the spreadsheet to source data from.
+            var query = new google.visualization.Query(
+                'https://spreadsheets.google.com/pub?key=' + ssKey + '&sheet=Sheet3');
+            query.send(draw);
+
+        }
+
+        function initialize2014() {
+            $(".nav li").removeClass("active");
+            $("#2014").addClass("active");
+            // The URL of the spreadsheet to source data from.
+            var query = new google.visualization.Query(
+                'https://spreadsheets.google.com/pub?key=' + ssKey + '&sheet=Sheet2');
+            query.send(draw);
+        }
+
+        function initializeCurrentYear() {
+            $(".nav li").removeClass("active");
+            $("#currentYear").addClass("active");
+            // The URL of the spreadsheet to source data from.
+            var query = new google.visualization.Query(
+                'https://spreadsheets.google.com/pub?key=' + ssKey);
+            query.send(draw);
+        }
+
+
+
+
+        function draw(response) {
+            if (response.isError()) {
+                alert('Error in query');
+            }
+
+            var minuteData = response.getDataTable();
+            var martin = minuteData.getValue(1, 1);
+            var johannes = minuteData.getValue(1, 2);
+
+            if (johannes > martin) {
+                document.getElementById("leader").innerHTML = "johannes!";
+                console.log("johannes");
+            } else {
+                document.getElementById("leader").innerHTML = "martin!";
+                console.log("martin");
+            }
+
+            var chart = new google.visualization.ColumnChart(
+                document.getElementById('chart_div'));
+            chart.draw(minuteData, {
+                'legend': 'bottom',
+                'vAxis': {
+                    'title': 'Löpta minuter och kilometrar i år'
+                }
+
+            });
+
+        }
+    </script>
+
+    <style>
+        h1 {
+            text-align: center
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/run">En löpande tävling</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li id="currentYear" class="active"><a href="#" onclick="initializeCurrentYear();">I år</a></li>
+                    <li id="2014"><a href="#" onclick="initialize2014();">2014</a></li>
+                    <li id="2013"><a href="#" onclick="initialize2013();">2013</a></li>
+                    <!--
+<li><a href="#contact">Contact</a></li>
+-->
+                </ul>
+            </div>
+            <!--.nav-collapse -->
+        </div>
+    </nav>
+
+    <h1 id="leader"></h1>
+    <table align="center">
+        <tr>
+            <td colSpan=2>
+                <div id="chart_div" style="align: center; width: 700px; height: 700px;"></div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
